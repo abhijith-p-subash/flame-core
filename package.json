@@ -3,18 +3,19 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-  "build": "tsc",                       
-  "test": "jest --passWithNoTests",      
-  "prepare": "npm run build",            
-  "prepublishOnly": "npm test && npm run lint", 
-  "clean": "rimraf dist",                
-  "dev": "ts-node src/index.ts"          
-},
+    "build": "tsc",
+    "test": "jest --passWithNoTests",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "clean": "rimraf dist",
+    "dev": "ts-node src/index.ts"
+  },
   "author": "Abhijith P Subash",
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "firebase": "^11.0.2"
+    "firebase": "^11.0.2",
+    "http-status-codes": "^2.3.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
