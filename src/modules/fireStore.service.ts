@@ -12,20 +12,20 @@ import FirebaseConfig from "../config/firebase.config";
 import { Task, TaskResponse } from "../utils/task";
 import { queryValidator } from "../utils/validation";
 
-interface response {
-  data: any;
-  count: number;
-  limit: number;
-  error: Error | null;
-  message: string;
-  success: boolean;
-}
-
 class FireStoreService {
+  private static instance: FireStoreService;
   private db: Firestore;
 
   constructor() {
     this.db = getFirestore(FirebaseConfig.getApp());
+  }
+
+  static getInstance(): FireStoreService {
+    if (!this.instance) {
+      this.instance = new FireStoreService();
+    }
+
+    return this.instance;
   }
 
   async getAll<T>(collectionName: string, task: Task): Promise<TaskResponse> {
@@ -203,29 +203,35 @@ class FireStoreService {
       return {
         data: results,
         message: "Bulk update successfully",
-      }
+      };
     } catch (error) {
       return {
         error: error as Error,
         message: "Bulk update Failed",
-      }
+      };
     }
   }
 
-  async deleteById<T>(collectionName: string, task: Task): Promise<TaskResponse> {
+  async deleteById<T>(
+    collectionName: string,
+    task: Task
+  ): Promise<TaskResponse> {
     try {
       const docRef = doc(this.db, collectionName, task.id as string);
       const res = await deleteDoc(docRef);
-      return {data: res, error: null, message: "Delete successfully"}
+      return { data: res, error: null, message: "Delete successfully" };
     } catch (error) {
       return {
         error: error as Error,
         message: "Failed to delete",
-      }
+      };
     }
   }
 
-  async deleteOne<T>(collectionName: string, task: Task):Promise<TaskResponse> {
+  async deleteOne<T>(
+    collectionName: string,
+    task: Task
+  ): Promise<TaskResponse> {
     try {
       const getOneRes = await this.getOne(collectionName, task);
       const deleteRes = await this.deleteById(collectionName, {
@@ -236,16 +242,20 @@ class FireStoreService {
         data: deleteRes.data,
         error: null,
         message: "Delete successfully",
-      }
+      };
     } catch (error) {
       return {
         error: error as Error,
         message: "Failed to delete one",
-      }
+      };
     }
   }
 
-  async deleteBulk<T>(collectionName: string, ids: string[], task: Task):Promise<TaskResponse> {
+  async deleteBulk<T>(
+    collectionName: string,
+    ids: string[],
+    task: Task
+  ): Promise<TaskResponse> {
     try {
       if (!ids.length) {
         throw new Error("Ids is required");
@@ -255,10 +265,10 @@ class FireStoreService {
           id,
           ...task,
         });
-      })
-      return {data: results, message: "Bulk delete successfully"}
+      });
+      return { data: results, message: "Bulk delete successfully" };
     } catch (error) {
-      return {error: error as Error, message: "Bulk delete Failed"}
+      return { error: error as Error, message: "Bulk delete Failed" };
     }
   }
 
@@ -270,4 +280,5 @@ class FireStoreService {
   // async taskAfterDelete() {}
 }
 
-export default FireStoreService;
+const fireStoreService = FireStoreService.getInstance()
+export {fireStoreService}
