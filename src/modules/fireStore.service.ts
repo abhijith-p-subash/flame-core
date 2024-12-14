@@ -12,20 +12,13 @@ import FirebaseConfig from "../config/firebase.config";
 import { Task, TaskResponse } from "../utils/task";
 import { queryValidator } from "../utils/validation";
 
+
+
 class FireStoreService {
-  private static instance: FireStoreService;
   private db: Firestore;
 
   constructor() {
     this.db = getFirestore(FirebaseConfig.getApp());
-  }
-
-  static getInstance(): FireStoreService {
-    if (!this.instance) {
-      this.instance = new FireStoreService();
-    }
-
-    return this.instance;
   }
 
   async getAll<T>(collectionName: string, task: Task): Promise<TaskResponse> {
@@ -47,10 +40,10 @@ class FireStoreService {
         message: "Get all data successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Error getting data",
-      };
+        message: `Error getting data`,
+      } as TaskResponse;
     }
   }
 
@@ -74,10 +67,10 @@ class FireStoreService {
         message: "Get data by id successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to get data by id",
-      };
+        message: `Failed to get data by id`,
+      } as TaskResponse;
     }
   }
 
@@ -96,10 +89,10 @@ class FireStoreService {
         message: "Get one data successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to get one data",
-      };
+        message: `Failed to get one data`,
+      } as TaskResponse;
     }
   }
 
@@ -113,10 +106,10 @@ class FireStoreService {
         count: totalCount,
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to get data count",
-      };
+        message: `Failed to get data count`,
+      } as TaskResponse;
     }
   }
 
@@ -130,10 +123,10 @@ class FireStoreService {
         message: "Create successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to create",
-      };
+        message: `Failed to create record`,
+      } as TaskResponse;
     }
   }
 
@@ -153,10 +146,10 @@ class FireStoreService {
         message: "Update successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to update",
-      };
+        message: `Failed to update`,
+      } as TaskResponse;
     }
   }
 
@@ -176,10 +169,10 @@ class FireStoreService {
         message: "Update successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to update",
-      };
+        message: `Failed to update one record`,
+      } as TaskResponse;
     }
   }
 
@@ -205,10 +198,10 @@ class FireStoreService {
         message: "Bulk update successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Bulk update Failed",
-      };
+        message: `Bulk update failed`,
+      } as TaskResponse;
     }
   }
 
@@ -221,10 +214,10 @@ class FireStoreService {
       const res = await deleteDoc(docRef);
       return { data: res, error: null, message: "Delete successfully" };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to delete",
-      };
+        message: `Failed to delete`,
+      } as TaskResponse;
     }
   }
 
@@ -244,10 +237,10 @@ class FireStoreService {
         message: "Delete successfully",
       };
     } catch (error) {
-      return {
+      throw {
         error: error as Error,
-        message: "Failed to delete one",
-      };
+        message: `Failed to delete one`,
+      } as TaskResponse;
     }
   }
 
@@ -268,7 +261,10 @@ class FireStoreService {
       });
       return { data: results, message: "Bulk delete successfully" };
     } catch (error) {
-      return { error: error as Error, message: "Bulk delete Failed" };
+      throw {
+        error: error as Error,
+        message: `Bulk delete Failed`,
+      } as TaskResponse;
     }
   }
 
@@ -280,5 +276,14 @@ class FireStoreService {
   // async taskAfterDelete() {}
 }
 
-const fireStoreService = FireStoreService.getInstance()
-export {fireStoreService}
+// Singleton pattern for FireStoreService
+let fireStoreServiceCore: FireStoreService | null = null;
+
+const fireStoreService = (): FireStoreService => {
+  if (!fireStoreServiceCore) {
+    fireStoreServiceCore = new FireStoreService();
+  }
+  return fireStoreServiceCore;
+};
+
+export { fireStoreService };
