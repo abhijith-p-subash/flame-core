@@ -51,3 +51,13 @@ export interface Task {
   response?: TaskResponse;
   status?: "Pending" | "Completed" | "Errored";
 }
+
+
+ export class TaskResponseError extends Error {
+  taskResponse: TaskResponse;
+  constructor(taskResponse: TaskResponse) {
+    super(taskResponse.message);
+    this.taskResponse = taskResponse;
+    this.name = this.constructor.name;
+  }
+}
