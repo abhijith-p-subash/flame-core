@@ -7,6 +7,7 @@ import {
   doc,
   addDoc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import FirebaseConfig from "../config/firebase.config";
 import { Task, TaskResponse } from "../utils/task";
@@ -144,8 +145,9 @@ class FireStoreDatabaseService {
 
   async getCount(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
+      
       const colRef = collection(this.db, collectionName);
-      const q = queryValidator(task, colRef);
+      const q = queryValidator({...task, options: { limit: undefined }}, colRef);
       const totalCountSnapshot = await getDocs(q);
       const totalCount = totalCountSnapshot.size || 0;
       return {
@@ -183,33 +185,38 @@ class FireStoreDatabaseService {
     }
   }
 
+  
   async updateById<T>(
     collectionName: string,
-/**
- * Updates a document in the specified collection with the provided task data.
- * This method checks for the existence of the document ID in the task object and updates
- * the document in the Firestore database. It returns a TaskResponse containing the updated
- * document's ID and data.
- *
- * @param {string} collectionName - The name of the Firestore collection containing the document to update.
- * @param {Task} task - The task object containing the document ID and data to be updated.
- * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the updated document's ID and data.
- * @throws {Error} Throws an error if the task ID is not provided.
- */
-
     task: Task
   ): Promise<TaskResponse> {
     try {
       if (!task.id) {
         throw new Error("Id is required");
       }
-      const colRef = collection(this.db, collectionName, task.id as string);
-      const docRef = await addDoc(colRef, task.body);
+
+
+      if (!task.body) {
+        throw new Error("Body is required tp update");
+      }
+
+
+
+      const docRef = doc(this.db, collectionName, task.id as string);
+      await updateDoc(docRef, task.body);
+
       return {
-        data: { id: docRef.id, ...task.body } as T,
-        error: null,
-        message: "Update successfully",
+        data: { id: task.id, ...task.body } as T,
+        message: "Document updated successfully",
       };
+
+      // const colRef = collection(this.db, collectionName, task.id as string);
+      // const docRef = await addDoc(colRef, task.body);
+      // return {
+      //   data: { id: docRef.id, ...task.body } as T,
+      //   error: null,
+      //   message: "Update successfully",
+      // };
     } catch (error) {
       console.error(error);
       throw error;
@@ -232,16 +239,14 @@ class FireStoreDatabaseService {
     task: Task
   ): Promise<TaskResponse> {
     try {
-      const getOneRes = await this.getOne(collectionName, task);
-      const updateRes = await this.updateById(collectionName, {
-        ...task,
-        id: getOneRes.data.id,
-      });
-      return {
-        data: updateRes.data,
-        error: null,
-        message: "Update successfully",
-      };
+      const existingDocRes = await this.getOne(collectionName, task);
+      if (existingDocRes.data) {
+        return this.updateById(collectionName, {
+          ...task,
+          id: existingDocRes.data.id,
+        });
+      }
+      throw new Error("Document to update not found");
     } catch (error) {
       console.error(error);
       throw error;
@@ -300,9 +305,10 @@ class FireStoreDatabaseService {
     task: Task
   ): Promise<TaskResponse> {
     try {
+      if (!task.id) throw new Error("ID is required");
       const docRef = doc(this.db, collectionName, task.id as string);
       const res = await deleteDoc(docRef);
-      return { data: res, error: null, message: "Delete successfully" };
+      return { data: res, message: "Delete successfully" };
     } catch (error) {
       console.error(error);
       throw error;
@@ -325,16 +331,14 @@ class FireStoreDatabaseService {
     task: Task
   ): Promise<TaskResponse> {
     try {
-      const getOneRes = await this.getOne(collectionName, task);
-      const deleteRes = await this.deleteById(collectionName, {
-        ...task,
-        id: getOneRes.data.id,
-      });
-      return {
-        data: deleteRes.data,
-        error: null,
-        message: "Delete successfully",
-      };
+      const existingDocRes = await this.getOne(collectionName, task);
+      if (existingDocRes.data) {
+        return this.deleteById(collectionName, {
+          ...task,
+          id: existingDocRes.data.id,
+        });
+      }
+      throw new Error("Document to delete not found");
     } catch (error) {
       console.error(error);
       throw error;
@@ -359,16 +363,11 @@ class FireStoreDatabaseService {
     task: Task
   ): Promise<TaskResponse> {
     try {
-      if (!ids.length) {
-        throw new Error("Ids is required");
-      }
-      const results = ids.map(async (id) => {
-        await this.deleteById(collectionName, {
-          id,
-          ...task,
-        });
-      });
-      return { data: results, message: "Bulk delete successfully" };
+      if (!ids.length) throw new Error("IDs are required");
+
+      await Promise.all(ids.map(id => this.deleteById(collectionName, { id, ...task })));
+
+      return { data: null, message: "Bulk delete successful" };
     } catch (error) {
       console.error(error);
       throw error;
