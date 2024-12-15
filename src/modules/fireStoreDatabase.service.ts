@@ -15,10 +15,29 @@ import { queryValidator } from "../utils/validation";
 class FireStoreDatabaseService {
   private readonly db: Firestore;
 
+/**
+ * Initializes a new instance of the FireStoreDatabaseService class.
+ * This constructor sets up the Firestore database instance using the
+ * Firebase app configuration.
+ */
+
   constructor() {
     this.db = getFirestore(FirebaseConfig.getApp());
   }
 
+  /**
+   * Retrieves all data from the specified collection using the provided task.
+   * This method validates the task using the queryValidator and retrieves the
+   * data from the Firestore database. It returns a TaskResponse containing the
+   * retrieved data, the total count of data in the collection, and the limit
+   * set for the query.
+   *
+   * @param {string} collectionName - The name of the Firestore collection to
+   * retrieve data from.
+   * @param {Task} task - The task object containing the query options.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse
+   * containing the retrieved data, total count, and limit.
+   */
   async getAll<T>(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
       const colRef = collection(this.db, collectionName);
@@ -43,6 +62,17 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Retrieves a single document from the specified collection using the
+   * provided id.
+   *
+   * @param {string} collectionName - The name of the Firestore collection to
+   * retrieve data from.
+   * @param {Task} task - The task object containing the id of the document to
+   * retrieve.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse
+   * containing the retrieved data.
+   */
   async getById<T>(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
       if (!task.id) {
@@ -68,6 +98,16 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Retrieves a single document from the specified collection using the provided task query options.
+   * This method utilizes the queryValidator to construct the query and fetches the document
+   * from the Firestore database. It returns a TaskResponse containing the first matched document.
+   *
+   * @param {string} collectionName - The name of the Firestore collection to retrieve data from.
+   * @param {Task} task - The task object containing query options to filter the document.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the first matched document.
+   */
+
   async getOne<T>(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
       const colRef = collection(this.db, collectionName);
@@ -88,6 +128,20 @@ class FireStoreDatabaseService {
     }
   }
 
+/**
+ * Retrieves the count of documents in the specified collection using the
+ * provided task query options.
+ * This method constructs a query using the queryValidator and fetches the
+ * total number of documents that match the query from the Firestore database.
+ *
+ * @param {string} collectionName - The name of the Firestore collection to
+ * count documents from.
+ * @param {Task} task - The task object containing query options to filter
+ * the documents.
+ * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse
+ * containing the count of matched documents.
+ */
+
   async getCount(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
       const colRef = collection(this.db, collectionName);
@@ -102,6 +156,17 @@ class FireStoreDatabaseService {
       throw error;
     }
   }
+
+
+/**
+ * Creates a new document in the specified collection with the provided task data.
+ * This method adds the document to the Firestore database and returns a TaskResponse
+ * containing the newly created document's ID and data.
+ *
+ * @param {string} collectionName - The name of the Firestore collection to add the document to.
+ * @param {Task} task - The task object containing the data to be added as a new document.
+ * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the created document's ID and data.
+ */
 
   async create<T>(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
@@ -120,6 +185,18 @@ class FireStoreDatabaseService {
 
   async updateById<T>(
     collectionName: string,
+/**
+ * Updates a document in the specified collection with the provided task data.
+ * This method checks for the existence of the document ID in the task object and updates
+ * the document in the Firestore database. It returns a TaskResponse containing the updated
+ * document's ID and data.
+ *
+ * @param {string} collectionName - The name of the Firestore collection containing the document to update.
+ * @param {Task} task - The task object containing the document ID and data to be updated.
+ * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the updated document's ID and data.
+ * @throws {Error} Throws an error if the task ID is not provided.
+ */
+
     task: Task
   ): Promise<TaskResponse> {
     try {
@@ -139,6 +216,17 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Updates a single document in the specified collection with the provided task data.
+   * This method first retrieves the document using the getOne method, and then updates
+   * the document in the Firestore database using the updateById method. It returns a
+   * TaskResponse containing the updated document's ID and data.
+   *
+   * @param {string} collectionName - The name of the Firestore collection containing the document to update.
+   * @param {Task} task - The task object containing the data to be updated.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the updated document's ID and data.
+   * @throws {Error} Throws an error if the task ID is not provided.
+   */
   async updateOne<T>(
     collectionName: string,
     task: Task
@@ -160,6 +248,18 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Updates multiple documents in the specified collection with the provided task data.
+   * This method first validates the task ID and then updates the documents in the Firestore
+   * database using the updateById method. It returns a TaskResponse containing the updated
+   * documents' IDs and data.
+   *
+   * @param {string} collectionName - The name of the Firestore collection containing the documents to update.
+   * @param {string[]} ids - Array of document IDs to update.
+   * @param {Task} task - The task object containing the data to be updated.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the updated documents' IDs and data.
+   * @throws {Error} Throws an error if the task IDs is not provided.
+   */
   async updateBulk<T>(
     collectionName: string,
     ids: string[],
@@ -187,6 +287,14 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Deletes a document from the specified collection using the provided task ID.
+   *
+   * @param {string} collectionName - The name of the Firestore collection containing the document to delete.
+   * @param {Task} task - The task object containing the ID of the document to delete.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the result of the deletion operation.
+   * @throws {Error} Throws an error if the task ID is not provided.
+   */
   async deleteById<T>(
     collectionName: string,
     task: Task
@@ -201,6 +309,17 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Deletes a single document in the specified collection with the provided task data.
+   * This method first retrieves the document using the getOne method, and then deletes
+   * the document in the Firestore database using the deleteById method. It returns a
+   * TaskResponse containing the result of the deletion operation.
+   *
+   * @param {string} collectionName - The name of the Firestore collection containing the document to delete.
+   * @param {Task} task - The task object containing the data to be deleted.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the result of the deletion operation.
+   * @throws {Error} Throws an error if the task ID is not provided.
+   */
   async deleteOne<T>(
     collectionName: string,
     task: Task
@@ -222,6 +341,18 @@ class FireStoreDatabaseService {
     }
   }
 
+  /**
+   * Deletes multiple documents in the specified collection with the provided task data.
+   * This method accepts an array of IDs and a task object, and deletes the documents in
+   * the Firestore database using the deleteById method. It returns a TaskResponse containing
+   * the result of the deletion operation.
+   *
+   * @param {string} collectionName - The name of the Firestore collection containing the documents to delete.
+   * @param {string[]} ids - The array of IDs of the documents to delete.
+   * @param {Task} task - The task object containing the data to be deleted.
+   * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the result of the deletion operation.
+   * @throws {Error} Throws an error if the task ID is not provided.
+   */
   async deleteBulk<T>(
     collectionName: string,
     ids: string[],
