@@ -14,7 +14,7 @@ import { queryValidator } from "../utils/validation";
 
 
 
-class FireStoreService {
+class FireStoreDatabaseService {
   private db: Firestore;
 
   constructor() {
@@ -276,14 +276,14 @@ class FireStoreService {
   // async taskAfterDelete() {}
 }
 
-// Singleton pattern for FireStoreService
-let fireStoreServiceCore: FireStoreService | null = null;
+// Singleton pattern for FireStoreDatabaseService
+let fireStoreDatabaseServiceCore: FireStoreDatabaseService | null = null;
 
-const fireStoreService = (): FireStoreService => {
-  if (!fireStoreServiceCore) {
-    fireStoreServiceCore = new FireStoreService();
+const fireStoreDatabaseService = (): FireStoreDatabaseService => {
+  if (!fireStoreDatabaseServiceCore) {
+    fireStoreDatabaseServiceCore = new FireStoreDatabaseService();
   }
-  return fireStoreServiceCore;
+  return fireStoreDatabaseServiceCore;
 };
 
-export { fireStoreService };
+export { fireStoreDatabaseService };
