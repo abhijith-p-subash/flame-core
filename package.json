@@ -15,8 +15,7 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "firebase": "^11.0.2",
-    "http-status-codes": "^2.3.0"
+    "firebase": "^11.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
