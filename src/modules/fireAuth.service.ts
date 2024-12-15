@@ -22,6 +22,8 @@ import {
   UserCredential,
   User,
   OAuthProvider,
+  AuthProvider,
+  RecaptchaVerifier,
 } from "firebase/auth";
 import FirebaseConfig from "../config/firebase.config";
 import { TaskResponse } from "../utils/task";
@@ -233,7 +235,7 @@ class FireAuthService {
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
   private async signInWithProvider(
-    provider: any,
+    provider: AuthProvider,
     method: "popup" | "redirect" = "popup"
   ): Promise<TaskResponse> {
     try {
@@ -346,7 +348,7 @@ class FireAuthService {
    */
   async signInWithPhoneNumber(
     phoneNumber: string,
-    appVerifier: any
+    appVerifier: RecaptchaVerifier
   ): Promise<TaskResponse> {
     try {
       const confirmationResult = await signInWithPhoneNumber(
