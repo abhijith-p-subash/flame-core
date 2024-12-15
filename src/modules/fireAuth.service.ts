@@ -21,6 +21,7 @@ import {
   GithubAuthProvider,
   UserCredential,
   User,
+  OAuthProvider,
 } from "firebase/auth";
 import FirebaseConfig from "../config/firebase.config";
 import { TaskResponse } from "../utils/task";
@@ -233,6 +234,16 @@ class FireAuthService {
 
   async signInWithGithub(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
     const provider = new GithubAuthProvider();
+    return this.signInWithProvider(provider, method);
+  }
+
+  async signInWithApple(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+    const provider = new OAuthProvider('apple.com');
+    return this.signInWithProvider(provider, method);
+  }
+
+  async signInWithMicrosoft(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+    const provider = new OAuthProvider('microsoft.com');
     return this.signInWithProvider(provider, method);
   }
 
