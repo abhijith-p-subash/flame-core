@@ -19,8 +19,6 @@ import {
   FacebookAuthProvider,
   TwitterAuthProvider,
   GithubAuthProvider,
-  OAuthProvider,
-  PhoneAuthProvider,
   UserCredential,
   User,
 } from "firebase/auth";
@@ -175,79 +173,67 @@ class FireAuthService {
       await reauthenticateWithCredential(user, credential);
       return {
         data: null,
-        message: "Reauthentication successful",
+        message: "Re-Authentication successful",
       };
     } catch (error) {
       throw {
         error: error as Error,
-        message: "Reauthentication failed",
+        message: "Re-Authentication failed",
       } as TaskResponse;
     }
   }
 
-  // Third-Party Authentication Methods
-  async signInWithGoogle(): Promise<TaskResponse> {
+  // Third-Party Authentication Methods with sign-in method selection
+  private async signInWithProvider(
+    provider: any,
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
     try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(this.auth, provider);
-      return {
-        data: result.user,
-        message: "Google sign-in successful",
-      };
+      let result: UserCredential | null = null; // Initialize `result` as null
+      if (method === "popup") {
+        result = await signInWithPopup(this.auth, provider);
+      } else if (method === "redirect") {
+        await signInWithRedirect(this.auth, provider);
+        return { data: null, message: "Redirect sign-in initiated" };
+      }
+  
+      // If method is 'popup', return the result after successful sign-in
+      if (result) {
+        return {
+          data: result.user,
+          message: `${provider.constructor.name} sign-in successful`,
+        };
+      }
+  
+      throw new Error("Unexpected flow: result is null after sign-in");
+  
     } catch (error) {
       throw {
         error: error as Error,
-        message: "Google sign-in failed",
+        message: `${provider.constructor.name} sign-in failed`,
       } as TaskResponse;
     }
   }
+  
 
-  async signInWithFacebook(): Promise<TaskResponse> {
-    try {
-      const provider = new FacebookAuthProvider();
-      const result = await signInWithPopup(this.auth, provider);
-      return {
-        data: result.user,
-        message: "Facebook sign-in successful",
-      };
-    } catch (error) {
-      throw {
-        error: error as Error,
-        message: "Facebook sign-in failed",
-      } as TaskResponse;
-    }
+  async signInWithGoogle(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+    const provider = new GoogleAuthProvider();
+    return this.signInWithProvider(provider, method);
   }
 
-  async signInWithTwitter(): Promise<TaskResponse> {
-    try {
-      const provider = new TwitterAuthProvider();
-      const result = await signInWithPopup(this.auth, provider);
-      return {
-        data: result.user,
-        message: "Twitter sign-in successful",
-      };
-    } catch (error) {
-      throw {
-        error: error as Error,
-        message: "Twitter sign-in failed",
-      } as TaskResponse;
-    }
+  async signInWithFacebook(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+    const provider = new FacebookAuthProvider();
+    return this.signInWithProvider(provider, method);
   }
 
-  async signInWithGithub(): Promise<TaskResponse> {
-    try {
-      const provider = new GithubAuthProvider();
-      const result = await signInWithPopup(this.auth, provider);
-      return {
-        data: result.user,
-        message: "GitHub sign-in successful",
-      };
-    } catch (error) {
-      throw {
-        error: error as Error,
-        message: "GitHub sign-in failed",
-      } as TaskResponse;
-    }
+  async signInWithTwitter(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+    const provider = new TwitterAuthProvider();
+    return this.signInWithProvider(provider, method);
+  }
+
+  async signInWithGithub(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+    const provider = new GithubAuthProvider();
+    return this.signInWithProvider(provider, method);
   }
 
   async signInWithPhoneNumber(phoneNumber: string, appVerifier: any): Promise<TaskResponse> {
