@@ -1,5 +1,31 @@
-import { getAuth, Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import FirebaseConfig from '../config/firebase.config';
+import {
+  getAuth,
+  Auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
+  updatePassword,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  verifyPasswordResetCode,
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
+  signInWithPhoneNumber,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  TwitterAuthProvider,
+  GithubAuthProvider,
+  OAuthProvider,
+  PhoneAuthProvider,
+  UserCredential,
+  User,
+} from "firebase/auth";
+import FirebaseConfig from "../config/firebase.config";
+import { TaskResponse } from "../utils/task";
 
 class FireAuthService {
   private auth: Auth;
@@ -8,19 +34,255 @@ class FireAuthService {
     this.auth = getAuth(FirebaseConfig.getApp());
   }
 
-  async login(email: string, password: string) {
-    const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-    return userCredential.user;
+  // Authentication Methods
+  async login(email: string, password: string): Promise<TaskResponse> {
+    try {
+      const userCredential: UserCredential = await signInWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
+
+      return {
+        data: userCredential.user,
+        message: "Login successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Login failed",
+      } as TaskResponse;
+    }
   }
 
-  async register(email: string, password: string) {
-    const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-    return userCredential.user;
+  async register(email: string, password: string): Promise<TaskResponse> {
+    try {
+      const userCredential: UserCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
+
+      return {
+        data: userCredential.user,
+        message: "Registration successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Registration failed",
+      } as TaskResponse;
+    }
   }
 
-  async logout() {
-    await signOut(this.auth);
+  async logout(): Promise<TaskResponse> {
+    try {
+      await signOut(this.auth);
+      return {
+        data: null,
+        message: "Logout successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Logout failed",
+      } as TaskResponse;
+    }
+  }
+
+  // Password Management Methods
+  async resetPassword(email: string): Promise<TaskResponse> {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+      return {
+        data: null,
+        message: "Password reset email sent",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Failed to send password reset email",
+      } as TaskResponse;
+    }
+  }
+
+  async verifyResetCode(code: string): Promise<TaskResponse> {
+    try {
+      const email = await verifyPasswordResetCode(this.auth, code);
+      return {
+        data: email,
+        message: "Verification code is valid",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Invalid verification code",
+      } as TaskResponse;
+    }
+  }
+
+  async confirmPasswordReset(code: string, newPassword: string): Promise<TaskResponse> {
+    try {
+      await confirmPasswordReset(this.auth, code, newPassword);
+      return {
+        data: null,
+        message: "Password has been reset successfully",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Failed to reset password",
+      } as TaskResponse;
+    }
+  }
+
+  async updatePassword(user: User, newPassword: string): Promise<TaskResponse> {
+    try {
+      await updatePassword(user, newPassword);
+      return {
+        data: null,
+        message: "Password updated successfully",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Failed to update password",
+      } as TaskResponse;
+    }
+  }
+
+  // Email Management Methods
+  async updateEmail(user: User, newEmail: string): Promise<TaskResponse> {
+    try {
+      await updateEmail(user, newEmail);
+      return {
+        data: null,
+        message: "Email updated successfully",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Failed to update email",
+      } as TaskResponse;
+    }
+  }
+
+  async reauthenticate(email: string, password: string): Promise<TaskResponse> {
+    try {
+      const credential = EmailAuthProvider.credential(email, password);
+      const user = this.auth.currentUser;
+      if (!user) throw new Error("No user is currently signed in");
+      await reauthenticateWithCredential(user, credential);
+      return {
+        data: null,
+        message: "Reauthentication successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Reauthentication failed",
+      } as TaskResponse;
+    }
+  }
+
+  // Third-Party Authentication Methods
+  async signInWithGoogle(): Promise<TaskResponse> {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(this.auth, provider);
+      return {
+        data: result.user,
+        message: "Google sign-in successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Google sign-in failed",
+      } as TaskResponse;
+    }
+  }
+
+  async signInWithFacebook(): Promise<TaskResponse> {
+    try {
+      const provider = new FacebookAuthProvider();
+      const result = await signInWithPopup(this.auth, provider);
+      return {
+        data: result.user,
+        message: "Facebook sign-in successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Facebook sign-in failed",
+      } as TaskResponse;
+    }
+  }
+
+  async signInWithTwitter(): Promise<TaskResponse> {
+    try {
+      const provider = new TwitterAuthProvider();
+      const result = await signInWithPopup(this.auth, provider);
+      return {
+        data: result.user,
+        message: "Twitter sign-in successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Twitter sign-in failed",
+      } as TaskResponse;
+    }
+  }
+
+  async signInWithGithub(): Promise<TaskResponse> {
+    try {
+      const provider = new GithubAuthProvider();
+      const result = await signInWithPopup(this.auth, provider);
+      return {
+        data: result.user,
+        message: "GitHub sign-in successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "GitHub sign-in failed",
+      } as TaskResponse;
+    }
+  }
+
+  async signInWithPhoneNumber(phoneNumber: string, appVerifier: any): Promise<TaskResponse> {
+    try {
+      const confirmationResult = await signInWithPhoneNumber(
+        this.auth,
+        phoneNumber,
+        appVerifier
+      );
+      return {
+        data: confirmationResult,
+        message: "Phone number sign-in successful",
+      };
+    } catch (error) {
+      throw {
+        error: error as Error,
+        message: "Phone number sign-in failed",
+      } as TaskResponse;
+    }
+  }
+
+  // Listener Methods
+  onAuthStateChanged(callback: (user: User | null) => void): void {
+    onAuthStateChanged(this.auth, callback);
   }
 }
 
-export default FireAuthService;
+// Singleton pattern for FireAuthService
+let fireAuthServiceCore: FireAuthService | null = null;
+
+const fireAuthService = (): FireAuthService => {
+  if (!fireAuthServiceCore) {
+    fireAuthServiceCore = new FireAuthService();
+  }
+  return fireAuthServiceCore;
+};
+
+export { fireAuthService };
