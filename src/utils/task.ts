@@ -76,6 +76,25 @@ export interface TaskOptions {
    * @memberof TaskOptions
    */
   limit?: number;
+
+
+  /**
+   * A cursor for use in pagination.
+   * This is a value that can be used as the `startAfter` option in a Firestore query.
+   *
+   * @type {any[]}
+   * @memberof TaskOptions
+   */
+  startAfter?: any[];
+
+  /**
+   * A cursor for use in pagination.
+   * This is a value that can be used as the `startAt` option in a Firestore query.
+   *
+   * @type {any[]}
+   * @memberof TaskOptions
+   */
+  startAt?: any[];
 }
 
 /**

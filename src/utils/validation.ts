@@ -4,6 +4,8 @@ import {
   orderBy,
   Query,
   query,
+  startAfter,
+  startAt,
   where,
 } from "firebase/firestore";
 import { Task } from "./task";
@@ -50,6 +52,14 @@ export const queryValidator = (task: Task, colRef: CollectionReference) => {
     for (const [field, direction] of task.options.sort) {
       q = query(q, orderBy(field, direction));
     }
+  }
+
+  if(task.options?.startAfter){
+    q = query(q, startAfter(task.options.startAfter));
+  }
+
+  if(task.options?.startAt){
+    q = query(q, startAt(task.options.startAt));
   }
 
   if (task.options?.limit) {
