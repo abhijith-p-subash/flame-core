@@ -9,7 +9,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import FirebaseConfig from "../config/firebase.config";
-import { Task, TaskResponse, TaskResponseError } from "../utils/task";
+import { Task, TaskResponse } from "../utils/task";
 import { queryValidator } from "../utils/validation";
 
 class FireStoreDatabaseService {
@@ -38,10 +38,8 @@ class FireStoreDatabaseService {
         message: "Get all data successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Error getting data",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -65,10 +63,8 @@ class FireStoreDatabaseService {
         message: "Get data by id successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to get data by id",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -87,10 +83,8 @@ class FireStoreDatabaseService {
         message: "Get one data successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to get one data",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -104,10 +98,8 @@ class FireStoreDatabaseService {
         count: totalCount,
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to get count",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -121,10 +113,8 @@ class FireStoreDatabaseService {
         message: "Create successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to create",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -144,10 +134,8 @@ class FireStoreDatabaseService {
         message: "Update successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to update",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -167,10 +155,8 @@ class FireStoreDatabaseService {
         message: "Update successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to update one",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -196,10 +182,8 @@ class FireStoreDatabaseService {
         message: "Bulk update successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Bulk update Failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -212,10 +196,8 @@ class FireStoreDatabaseService {
       const res = await deleteDoc(docRef);
       return { data: res, error: null, message: "Delete successfully" };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to delete",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -235,10 +217,8 @@ class FireStoreDatabaseService {
         message: "Delete successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to delete one",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -259,10 +239,8 @@ class FireStoreDatabaseService {
       });
       return { data: results, message: "Bulk delete successfully" };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Bulk delete Failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 

@@ -24,7 +24,7 @@ import {
   OAuthProvider,
 } from "firebase/auth";
 import FirebaseConfig from "../config/firebase.config";
-import { TaskResponse, TaskResponseError } from "../utils/task";
+import { TaskResponse } from "../utils/task";
 
 /**
  * FireAuthService class provides methods for user authentication
@@ -40,7 +40,7 @@ class FireAuthService {
 
   /**
    * Logs in a user using email and password.
-   * 
+   *
    * @param {string} email - User's email.
    * @param {string} password - User's password.
    * @returns {Promise<TaskResponse>} Response containing user data.
@@ -57,42 +57,35 @@ class FireAuthService {
         message: "Login successful",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Login failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Registers a new user using email and password.
-   * 
+   *
    * @param {string} email - User's email.
    * @param {string} password - User's password.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
   async register(email: string, password: string): Promise<TaskResponse> {
     try {
-      const userCredential: UserCredential = await createUserWithEmailAndPassword(
-        this.auth,
-        email,
-        password
-      );
+      const userCredential: UserCredential =
+        await createUserWithEmailAndPassword(this.auth, email, password);
       return {
         data: userCredential.user,
         message: "Registration successful",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Registration failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Logs out the current user.
-   * 
+   *
    * @returns {Promise<TaskResponse>} Response confirming logout.
    */
   async logout(): Promise<TaskResponse> {
@@ -103,16 +96,14 @@ class FireAuthService {
         message: "Logout successful",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Logout failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Sends a password reset email to the user.
-   * 
+   *
    * @param {string} email - User's email.
    * @returns {Promise<TaskResponse>} Response confirming email sent.
    */
@@ -124,16 +115,14 @@ class FireAuthService {
         message: "Password reset email sent",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to send password reset email",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Verifies the password reset code.
-   * 
+   *
    * @param {string} code - Password reset code.
    * @returns {Promise<TaskResponse>} Response containing user's email.
    */
@@ -145,21 +134,22 @@ class FireAuthService {
         message: "Verification code is valid",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Verification code is invalid",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Confirms the password reset with a new password.
-   * 
+   *
    * @param {string} code - Password reset code.
    * @param {string} newPassword - New password to set.
    * @returns {Promise<TaskResponse>} Response confirming password reset.
    */
-  async confirmPasswordReset(code: string, newPassword: string): Promise<TaskResponse> {
+  async confirmPasswordReset(
+    code: string,
+    newPassword: string
+  ): Promise<TaskResponse> {
     try {
       await confirmPasswordReset(this.auth, code, newPassword);
       return {
@@ -167,16 +157,14 @@ class FireAuthService {
         message: "Password has been reset successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to reset password",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Updates the user's password.
-   * 
+   *
    * @param {User} user - Current user.
    * @param {string} newPassword - New password to set.
    * @returns {Promise<TaskResponse>} Response confirming password update.
@@ -189,16 +177,14 @@ class FireAuthService {
         message: "Password updated successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to update password",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Updates the user's email.
-   * 
+   *
    * @param {User} user - Current user.
    * @param {string} newEmail - New email to set.
    * @returns {Promise<TaskResponse>} Response confirming email update.
@@ -211,16 +197,14 @@ class FireAuthService {
         message: "Email updated successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to update email",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Re-authenticates the user with email and password.
-   * 
+   *
    * @param {string} email - User's email.
    * @param {string} password - User's password.
    * @returns {Promise<TaskResponse>} Response confirming re-authentication.
@@ -236,16 +220,14 @@ class FireAuthService {
         message: "Re-Authentication successful",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Re-Authentication failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Signs in with a third-party provider using the specified method.
-   * 
+   *
    * @param {any} provider - Authentication provider.
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
@@ -271,89 +253,101 @@ class FireAuthService {
       }
 
       throw new Error("Unexpected flow: result is null after sign-in");
-
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Sign-in failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Signs in with Google using the specified method.
-   * 
+   *
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
-  async signInWithGoogle(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+  async signInWithGoogle(
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
     const provider = new GoogleAuthProvider();
     return this.signInWithProvider(provider, method);
   }
 
   /**
    * Signs in with Facebook using the specified method.
-   * 
+   *
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
-  async signInWithFacebook(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+  async signInWithFacebook(
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
     const provider = new FacebookAuthProvider();
     return this.signInWithProvider(provider, method);
   }
 
   /**
    * Signs in with Twitter using the specified method.
-   * 
+   *
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
-  async signInWithTwitter(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+  async signInWithTwitter(
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
     const provider = new TwitterAuthProvider();
     return this.signInWithProvider(provider, method);
   }
 
   /**
    * Signs in with Github using the specified method.
-   * 
+   *
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
-  async signInWithGithub(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
+  async signInWithGithub(
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
     const provider = new GithubAuthProvider();
     return this.signInWithProvider(provider, method);
   }
 
   /**
    * Signs in with Apple using the specified method.
-   * 
+   *
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
-  async signInWithApple(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
-    const provider = new OAuthProvider('apple.com');
+  async signInWithApple(
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
+    const provider = new OAuthProvider("apple.com");
     return this.signInWithProvider(provider, method);
   }
 
   /**
    * Signs in with Microsoft using the specified method.
-   * 
+   *
    * @param {"popup" | "redirect"} method - Sign-in method.
    * @returns {Promise<TaskResponse>} Response containing user data.
    */
-  async signInWithMicrosoft(method: "popup" | "redirect" = "popup"): Promise<TaskResponse> {
-    const provider = new OAuthProvider('microsoft.com');
+  async signInWithMicrosoft(
+    method: "popup" | "redirect" = "popup"
+  ): Promise<TaskResponse> {
+    const provider = new OAuthProvider("microsoft.com");
     return this.signInWithProvider(provider, method);
   }
 
   /**
    * Signs in using phone number and app verifier.
-   * 
+   *
    * @param {string} phoneNumber - Phone number to sign in with.
    * @param {any} appVerifier - App verifier for phone number authentication.
    * @returns {Promise<TaskResponse>} Response containing confirmation result.
    */
-  async signInWithPhoneNumber(phoneNumber: string, appVerifier: any): Promise<TaskResponse> {
+  async signInWithPhoneNumber(
+    phoneNumber: string,
+    appVerifier: any
+  ): Promise<TaskResponse> {
     try {
       const confirmationResult = await signInWithPhoneNumber(
         this.auth,
@@ -365,16 +359,14 @@ class FireAuthService {
         message: "Phone number sign-in successful",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Phone number sign-in failed",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
   /**
    * Sets up a listener for changes in authentication state.
-   * 
+   *
    * @param {(user: User | null) => void} callback - Callback function for auth state changes.
    */
   onAuthStateChanged(callback: (user: User | null) => void): void {
@@ -387,7 +379,7 @@ let fireAuthServiceCore: FireAuthService | null = null;
 
 /**
  * Returns the singleton instance of FireAuthService.
- * 
+ *
  * @returns {FireAuthService} The FireAuthService instance.
  */
 const fireAuthService = (): FireAuthService => {
@@ -398,4 +390,3 @@ const fireAuthService = (): FireAuthService => {
 };
 
 export { fireAuthService };
-

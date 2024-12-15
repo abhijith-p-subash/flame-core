@@ -6,7 +6,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import FirebaseConfig from "../config/firebase.config";
-import { TaskResponse, TaskResponseError } from "../utils/task";
+import { TaskResponse } from "../utils/task";
 
 /**
  * Service for interacting with Firebase Storage.
@@ -42,10 +42,8 @@ class FireStorageService {
         message: "File uploaded successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to upload file",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -67,10 +65,8 @@ class FireStorageService {
         message: "File downloaded successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to download file",
-      });
+      console.error(error);
+      throw error;
     }
   }
 
@@ -92,10 +88,8 @@ class FireStorageService {
         message: "File deleted successfully",
       };
     } catch (error) {
-      throw new TaskResponseError({
-        error: error as Error,
-        message: "Failed to delete file",
-      });
+      console.error(error);
+      throw error;
     }
   }
 }
