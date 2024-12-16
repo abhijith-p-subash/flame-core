@@ -1,4 +1,4 @@
-# Firebase Storage Service Documentation
+# Firebase Auth Service Documentation
 
 The `FireAuthService` is a lightweight and developer-friendly library designed to abstract and simplify Firebase Authentication. By providing a unified interface for various authentication methods, it streamlines the integration of Firebase into web applications. Developers can quickly implement login, registration, password reset, and social authentication with minimal boilerplate code.
 
