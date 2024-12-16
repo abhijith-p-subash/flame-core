@@ -12,8 +12,6 @@
    - [FireAuthService](#fireauthservice)
    - [FireStoreDatabaseService](#firestoredatabaseservice)
    - [FireStorageService](#firestorageservice)
-5. [Sample Usage](#sample-usage)
-6. [Demos](#demos)
 
 ---
 
@@ -97,37 +95,6 @@ firebaseConfig.initialize({
 ### FireAuthService
 The `FireAuthService` module focuses on authentication-related methods. It provides a seamless way to manage user login, registration, password resets, and social sign-ins.
 
-[Read detailed documentation](#fireauthservice-documentation)
-
----
-
-### FireStoreDatabaseService
-The `FireStoreDatabaseService` module simplifies Firestore database operations. Perform CRUD operations with intuitive methods.
-
-#### Features:
-- Add, update, delete, and fetch data.
-- Query documents with ease.
-- Support for batch operations.
-
-[Read detailed documentation](#firestoredatabaseservice-documentation)
-
----
-
-### FireStorageService
-The `FireStorageService` module abstracts Firebase Storage operations, enabling easy file uploads, downloads, and deletions.
-
-#### Features:
-- Upload files with metadata.
-- Retrieve download URLs.
-- Delete stored files.
-- Monitor upload progress.
-
-[Read detailed documentation](#firestorageservice-documentation)
-
----
-
-## Sample Usage
-
 ### Authentication Example
 ```typescript
 import { fireAuthService } from 'flame-core';
@@ -144,21 +111,71 @@ const authService = fireAuthService();
 })();
 ```
 
+[Read detailed documentation](docs/FIREBASE_AUTHENTICATION.md)
+
+---
+
+### FireStoreDatabaseService
+The `FireStoreDatabaseService` module simplifies Firestore database operations. Perform CRUD operations with intuitive methods.
+
+#### Features:
+- Add, update, delete, and fetch data.
+- Query documents with ease.
+- Support for batch operations.
+
 ### Firestore Example
 ```typescript
 import { fireStoreDatabaseService } from 'flame-core';
 
 const dbService = fireStoreDatabaseService();
 
+interface Users{
+    id?: string,
+    name: string,
+    email: string,
+    age: number,
+    eligible: boolean
+    salary: 50000
+    ...
+    .....
+}
+
 (async () => {
   try {
-    const data = await dbService.getDocument("users", "userId123");
+    const data = await dbService.getAll<Users>("users", {
+      options: {
+        where: {
+          age: 20,
+          email: "ram@ram.com",
+          name: "Nike",
+          created_at: { $gte: "01-01-1900", $lte: "31-12-2000" },
+          salary: {
+            $gt: 1000,
+          },
+        },
+        sort: [["created_at", "asc"]],
+        limit: 10,
+      },
+    });
     console.log(data);
   } catch (error) {
     console.error("Error fetching document:", error);
   }
 })();
 ```
+
+[Read detailed documentation](docs/FIREBASE_STORE_DATABASE.md)
+
+---
+
+### FireStorageService
+The `FireStorageService` module abstracts Firebase Storage operations, enabling easy file uploads, downloads, and deletions.
+
+#### Features:
+- Upload files with metadata.
+- Retrieve download URLs.
+- Delete stored files.
+- Monitor upload progress.
 
 ### Storage Example
 ```typescript
@@ -176,16 +193,19 @@ const storageService = fireStorageService();
 })();
 ```
 
----
+[Read detailed documentation](docs/FIREBASE_STORAGE.md)
 
-## Demos
+<!------->
 
-Explore the full potential of `flame-core` by diving into the individual module documentation:
+
+<!--## Demos-->
+
+<!--Explore the full potential of `flame-core` by diving into the individual module documentation:-->
 
 <!-- - [FireAuthService Documentation](#fireauthservice-documentation) -->
-- [FireAuthService Documentation](docs/FIREBASE_AUTHENTICATION.md)
-- [FireStoreDatabaseService Documentation](#firestoredatabaseservice-documentation)
-- [FireStorageService Documentation](#firestorageservice-documentation)
+<!--- [FireAuthService Documentation](docs/FIREBASE_AUTHENTICATION.md)-->
+<!--- [FireStoreDatabaseService Documentation](#firestoredatabaseservice-documentation)-->
+<!--- [FireStorageService Documentation](#firestorageservice-documentation)-->
 
-Each module includes detailed examples, method explanations, and demo code to get you started quickly.
+<!--Each module includes detailed examples, method explanations, and demo code to get you started quickly.-->
 
