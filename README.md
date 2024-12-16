@@ -183,7 +183,7 @@ const storageService = fireStorageService();
 Explore the full potential of `flame-core` by diving into the individual module documentation:
 
 <!-- - [FireAuthService Documentation](#fireauthservice-documentation) -->
-- [FireAuthService Documentation](#FIREBASE_AUTHENTICATION)
+- [FireAuthService Documentation](#docs/FIREBASE_AUTHENTICATION)
 - [FireStoreDatabaseService Documentation](#firestoredatabaseservice-documentation)
 - [FireStorageService Documentation](#firestorageservice-documentation)
 
