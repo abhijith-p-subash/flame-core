@@ -1,9 +1,9 @@
-import FirebaseConfig from "./config/firebase.config";
+import firebaseConfig from "./config/firebase.config";
 import { fireAuthService } from "./modules/fireAuth.service";
 import { fireStoreDatabaseService } from "./modules/fireStoreDatabase.service";
 import { fireStorageService } from "./modules/fireStorage.service";
 
-FirebaseConfig.initialize({
+firebaseConfig.initialize({
   apiKey: "AIzaSyCpv_GfAtP_V5PUyWsvq3dYhJ_TYcfxUXI",
   authDomain: "flame-core.firebaseapp.com",
   projectId: "flame-core",
@@ -61,7 +61,7 @@ async function getData() {
 getData();
 
 export {
-  FirebaseConfig,
+  firebaseConfig,
   fireStoreDatabaseService,
   fireAuthService,
   fireStorageService,
