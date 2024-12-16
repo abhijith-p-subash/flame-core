@@ -1,4 +1,4 @@
-# FireAuthService Documentation
+# Firebase Storage Service Documentation
 
 The `FireAuthService` is a lightweight and developer-friendly library designed to abstract and simplify Firebase Authentication. By providing a unified interface for various authentication methods, it streamlines the integration of Firebase into web applications. Developers can quickly implement login, registration, password reset, and social authentication with minimal boilerplate code.
 
@@ -31,34 +31,10 @@ The `FireAuthService` class simplifies Firebase Authentication for web applicati
 
 ## Getting Started
 
-1. Install Firebase in your project:
-   ```bash
-   npm install firebase
-   ```
+Import and use the `FireAuthService`:
 
-2. Configure Firebase:
    ```typescript
-   import { initializeApp } from "firebase/app";
-
-   const firebaseConfig = {
-     apiKey: "YOUR_API_KEY",
-     authDomain: "YOUR_AUTH_DOMAIN",
-     projectId: "YOUR_PROJECT_ID",
-     storageBucket: "YOUR_STORAGE_BUCKET",
-     messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-     appId: "YOUR_APP_ID",
-   };
-
-   const app = initializeApp(firebaseConfig);
-
-   export default {
-     getApp: () => app,
-   };
-   ```
-
-3. Import and use the `FireAuthService`:
-   ```typescript
-   import { fireAuthService } from "./services/fireAuthService";
+   import { fireAuthService } from "flame-core";
 
    const authService = fireAuthService();
    ```

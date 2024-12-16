@@ -16,36 +16,21 @@ The Firebase Storage Service provides an easy-to-use API for interacting with Fi
 
 ---
 
-## Overview
+## Getting Started
 
-The Firebase Storage Service is a wrapper around Firebase's `getStorage`, `ref`, `uploadBytes`, `getDownloadURL`, and `deleteObject` functions. It ensures a consistent and reusable approach to handle file operations with Firebase Storage.
+Import and use the `FireAuthService`:
 
-### Key Features:
+   ```typescript
+   import { fireStorageService } from "flame-core";
 
-- **File Upload:** Easily upload files to Firebase Storage and retrieve their download URLs.
-- **File Download:** Retrieve the download URL of stored files.
-- **File Deletion:** Delete files stored in Firebase Storage.
-- **Singleton Service:** Ensures only one instance of the storage service is created.
-
----
-
-## Installation
-
-1. Ensure Firebase SDK is installed in your project:
-
-   ```bash
-   npm install firebase
+   const storageService = fireStorageService();;
    ```
 
-2. Set up Firebase configuration and initialize Firebase in your project. Refer to Firebase's official documentation for guidance.
-
-3. Import and use the `FireStorageService` as described in the examples below.
-
 ---
 
-## Usage
+## Methods
 
-### Example: File Upload
+### File Upload
 
 ```typescript
 import { fireStorageService } from './path-to/fire-storage-service';
@@ -59,7 +44,7 @@ const storageService = fireStorageService();
 })();
 ```
 
-### Example: File Download
+### File Download
 
 ```typescript
 (async () => {
@@ -68,7 +53,7 @@ const storageService = fireStorageService();
 })();
 ```
 
-### Example: File Deletion
+### File Deletion
 
 ```typescript
 (async () => {
