@@ -4,15 +4,13 @@ The Firebase Storage Service provides an easy-to-use API for interacting with Fi
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Installation](#installation)
-3. [Usage](#usage)
-4. [API Reference](#api-reference)
+1. [Getting Started](#getting-started)
+2. [Methods](#methods)
    - [uploadFile](#uploadfile)
    - [downloadFile](#downloadfile)
    - [deleteFile](#deletefile)
-5. [Singleton Pattern](#singleton-pattern)
-6. [Error Handling](#error-handling)
+3. [Demo Usage](#demo-usage)
+
 
 ---
 
@@ -30,156 +28,102 @@ Import and use the `FireAuthService`:
 
 ## Methods
 
-### File Upload
-
-```typescript
-import { fireStorageService } from './path-to/fire-storage-service';
-
-const storageService = fireStorageService();
-
-(async () => {
-  const file = new File(["content"], "example.txt", { type: "text/plain" });
-  const response = await storageService.uploadFile('uploads/example.txt', file);
-  console.log(response.message, response.data);
-})();
-```
-
-### File Download
-
-```typescript
-(async () => {
-  const response = await storageService.downloadFile('uploads/example.txt');
-  console.log(response.message, response.data);
-})();
-```
-
-### File Deletion
-
-```typescript
-(async () => {
-  const response = await storageService.deleteFile('uploads/example.txt');
-  console.log(response.message);
-})();
-```
-
----
-
-## API Reference
-
 ### uploadFile
 
-Uploads a file to Firebase Storage and returns its download URL.
+Uploads a file to Firebase Storage.
 
-#### Syntax
+**Parameters:**
+- `filePath: string`: The path where the file should be stored in Firebase Storage.
+- `file: File`: The file to upload.
 
+**Returns:**
+- `Promise<TaskResponse>`
+
+**Example:**
 ```typescript
-async uploadFile(filePath: string, file: File): Promise<TaskResponse>
+const file = new File([data], "filename.png");
+const response = await storageService.uploadFile("images/filename.png", file);
+console.log(response);
 ```
-
-#### Parameters
-
-- `filePath` *(string)*: The path in Firebase Storage where the file will be stored.
-- `file` *(File)*: The file to upload.
-
-#### Returns
-
-- `Promise<TaskResponse>`: An object containing the file's download URL and a success message.
-
-#### Example
-
-```typescript
-const response = await storageService.uploadFile('uploads/image.png', imageFile);
-console.log(response.data.downloadURL);
-```
-
----
 
 ### downloadFile
 
-Fetches the download URL for a file stored in Firebase Storage.
+Downloads a file from Firebase Storage.
 
-#### Syntax
+**Parameters:**
+- `filePath: string`: The path of the file in Firebase Storage.
+- `file: File`: The file to upload.
 
+**Returns:**
+- `Promise<TaskResponse>`
+
+**Example:**
 ```typescript
-async downloadFile(filePath: string): Promise<TaskResponse>
+const response = await storageService.downloadFile("images/filename.png");
+console.log(response);
 ```
-
-#### Parameters
-
-- `filePath` *(string)*: The path of the file in Firebase Storage.
-
-#### Returns
-
-- `Promise<TaskResponse>`: An object containing the download URL and a success message.
-
-#### Example
-
-```typescript
-const response = await storageService.downloadFile('uploads/image.png');
-console.log(response.data.downloadURL);
-```
-
----
 
 ### deleteFile
 
 Deletes a file from Firebase Storage.
 
-#### Syntax
+**Parameters:**
+- `filePath: string`: The path of the file to delete in Firebase Storage.
+- `file: File`: The file to upload.
 
+**Returns:**
+- `Promise<TaskResponse>`
+
+**Example:**
 ```typescript
-async deleteFile(filePath: string): Promise<TaskResponse>
-```
-
-#### Parameters
-
-- `filePath` *(string)*: The path of the file in Firebase Storage to delete.
-
-#### Returns
-
-- `Promise<TaskResponse>`: An object with a success message confirming the deletion.
-
-#### Example
-
-```typescript
-const response = await storageService.deleteFile('uploads/image.png');
-console.log(response.message);
+const response = await storageService.deleteFile("images/filename.png");
+console.log(response);
 ```
 
 ---
 
-## Singleton Pattern
-
-The `FireStorageService` is implemented as a singleton to ensure only one instance is created and reused throughout the application.
-
-### Accessing the Singleton
+## Demo Usage
 
 ```typescript
-import { fireStorageService } from './path-to/fire-storage-service';
+import { fireStorageService } from "./services/fireStorageService";
 
 const storageService = fireStorageService();
+
+// Upload File Example
+(async () => {
+  try {
+    const file = new File([data], "filename.png");
+    const uploadResponse = await storageService.uploadFile("images/filename.png", file);
+    console.log(uploadResponse);
+  } catch (error) {
+    console.error("File upload failed:", error);
+  }
+})();
+
+// Download File Example
+(async () => {
+  try {
+    const downloadResponse = await storageService.downloadFile("images/filename.png");
+    console.log(downloadResponse);
+  } catch (error) {
+    console.error("File download failed:", error);
+  }
+})();
+
+// Delete File Example
+(async () => {
+  try {
+    const deleteResponse = await storageService.deleteFile("images/filename.png");
+    console.log(deleteResponse);
+  } catch (error) {
+    console.error("File deletion failed:", error);
+  }
+})();
+
 ```
 
-This approach ensures efficient resource usage and consistent behavior.
+### deleteFile
+- Ensure that Firebase is initialized correctly in your app before using `FireStorageService`.
+- The `TaskResponse` returned by each method contains either the data (like download URL) or a success message upon successful completion. If an error occurs, the method throws an exception that can be caught for error handling.
 
----
-
-## Error Handling
-
-The service methods throw errors if the operation fails. Use `try-catch` blocks to handle these errors gracefully.
-
-### Example
-
-```typescript
-try {
-  const response = await storageService.uploadFile('uploads/example.txt', file);
-  console.log(response.message);
-} catch (error) {
-  console.error('Error:', error);
-}
-```
-
----
-
-This documentation provides a comprehensive guide to using the Firebase Storage Service. For further assistance, consult the Firebase SDK documentation or reach out to the development team.
 
