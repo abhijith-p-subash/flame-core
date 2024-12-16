@@ -31,7 +31,7 @@ The `FireAuthService` class simplifies Firebase Authentication for web applicati
 
 ## Getting Started
 
-Import and use the `FireAuthService`:
+Import and use the `fireAuthService`:
 
    ```typescript
    import { fireAuthService } from "flame-core";
