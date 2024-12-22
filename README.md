@@ -12,6 +12,9 @@
    - [FireAuthService](#fireauthservice)
    - [FireStoreDatabaseService](#firestoredatabaseservice)
    - [FireStorageService](#firestorageservice)
+5. [Utils](#utils)
+   - [Task](#task)
+   - [Validation](#validation)
 
 ---
 
@@ -95,7 +98,7 @@ firebaseConfig.initialize({
 ### FireAuthService
 The `FireAuthService` module focuses on authentication-related methods. It provides a seamless way to manage user login, registration, password resets, and social sign-ins.
 
-### Authentication Example
+#### Authentication Example
 ```typescript
 import { fireAuthService } from 'flame-core';
 
@@ -123,21 +126,20 @@ The `FireStoreDatabaseService` module simplifies Firestore database operations. 
 - Query documents with ease.
 - Support for batch operations.
 
-### Firestore Example
+#### Firestore Example
 ```typescript
 import { fireStoreDatabaseService } from 'flame-core';
 
 const dbService = fireStoreDatabaseService();
 
-interface Users{
+interface Users {
     id?: string,
     name: string,
     email: string,
     age: number,
-    eligible: boolean
-    salary: 50000
-    ...
-    .....
+    eligible: boolean,
+    salary: 50000,
+    // Additional fields...
 }
 
 (async () => {
@@ -177,7 +179,7 @@ The `FireStorageService` module abstracts Firebase Storage operations, enabling 
 - Delete stored files.
 - Monitor upload progress.
 
-### Storage Example
+#### Storage Example
 ```typescript
 import { fireStorageService } from 'flame-core';
 
@@ -195,17 +197,31 @@ const storageService = fireStorageService();
 
 [Read detailed documentation](docs/FIREBASE_STORAGE.md)
 
-<!------->
+---
 
+## Utils
 
-<!--## Demos-->
+The `Utils` section contains helper modules that enhance functionality and simplify complex operations.
 
-<!--Explore the full potential of `flame-core` by diving into the individual module documentation:-->
+### Task
+The `Task` module provides a structured interface for defining and handling tasks, including filtering, sorting, and pagination. It also includes tools for constructing Firestore queries dynamically.
 
-<!-- - [FireAuthService Documentation](#fireauthservice-documentation) -->
-<!--- [FireAuthService Documentation](docs/FIREBASE_AUTHENTICATION.md)-->
-<!--- [FireStoreDatabaseService Documentation](#firestoredatabaseservice-documentation)-->
-<!--- [FireStorageService Documentation](#firestorageservice-documentation)-->
+**Key Features:**
+- Define tasks with `TaskOptions`, supporting advanced query conditions like `$lt`, `$gte`, `$in`, and `$arrCont`.
+- Handle task responses with `TaskResponse`.
+- Manage errors using the `TaskResponseError` class.
+- Includes `queryValidator` to dynamically build Firestore queries.
 
-<!--Each module includes detailed examples, method explanations, and demo code to get you started quickly.-->
+[Read detailed documentation](docs/TASK.md)
+
+---
+
+### Validation
+The `Validation` module includes functions to validate the structure and content of queries and ensure they adhere to the required format.
+
+**Key Features:**
+- `validateQuery`: Validates the query object to ensure it is correctly formatted.
+- Integrated into Firestore query building for error-free dynamic queries.
+
+[Read detailed documentation](docs/VALIDATION.md)
 
