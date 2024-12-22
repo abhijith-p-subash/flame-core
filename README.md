@@ -225,3 +225,22 @@ The `Validation` module includes functions to validate the structure and content
 
 [Read detailed documentation](docs/VALIDATION.md)
 
+## Contribute
+
+We welcome contributions to make flame-core better! If you have ideas, suggestions, or want to report issues, feel free to open a pull request or create an issue on GitHub. Let’s build something amazing together! 🚀
+
+---
+
+## Support the Developer
+
+If you find this project helpful, consider buying me a coffee! Your support means the world. ☕
+[Buy Me A Coffee](https://www.buymeacoffee.com/abhijithpsubash)
+
+#### Contact me
+
+Linkedin: https://bit.ly/3GQJ7mB
+Website: https://abhijithpsubash.com/
+
+---
+
+Thank you for using flame-core! Happy coding! 😊
