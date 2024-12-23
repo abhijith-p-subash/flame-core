@@ -51,6 +51,14 @@ class FireStoreDatabaseService {
         id: doc.id,
         ...(doc.data() as T),
       })) as T[];
+
+      if (
+        Array.isArray(task.options?.populate) &&
+        task.options.populate.length > 0
+      ) {
+        await this.populateFn(data, task.options.populate);
+      }
+
       return {
         data,
         count: totalCountRes.count,
@@ -83,14 +91,20 @@ class FireStoreDatabaseService {
       const snapshot = await getDoc(
         doc(this.db, collectionName, task.id as string)
       );
-
       if (!snapshot.exists()) {
         throw new Error("Data not found");
       }
+      let data = { id: snapshot.id, ...snapshot.data() } as T;
+
+      if (
+        Array.isArray(task.options?.populate) &&
+        task.options.populate.length > 0
+      ) {
+        data = await this.populateFn(data, task.options.populate);
+      }
 
       return {
-        data: { id: snapshot.id, ...snapshot.data() } as T,
-        error: null,
+        data,
         message: "Get data by id successfully",
       };
     } catch (error) {
@@ -114,12 +128,19 @@ class FireStoreDatabaseService {
       const colRef = collection(this.db, collectionName);
       const q = queryValidator(task, colRef);
       const snapshot = await getDocs(q);
-      const data = snapshot.docs.map((doc) => ({
+      let data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as T),
-      })) as T[];
+      }))[0] as T;
+      console.log(data);
+      if (
+        Array.isArray(task.options?.populate) &&
+        task.options.populate.length > 0
+      ) {
+        data = await this.populateFn(data, task.options.populate);
+      }
       return {
-        data: data[0],
+        data: data,
         error: null,
         message: "Get one data successfully",
       };
@@ -383,12 +404,12 @@ class FireStoreDatabaseService {
   }
 
   /**
-   * Populates the specified field(s) of the given data object(s) with the 
-   * corresponding document from the specified collection. If the data is an array, 
+   * Populates the specified field(s) of the given data object(s) with the
+   * corresponding document from the specified collection. If the data is an array,
    * the populate operation is performed in parallel using Promise.all.
-   * 
+   *
    * @param {any} data - The data object(s) to be populated.
-   * @param {any} populatePayload - An array of arrays containing the field name 
+   * @param {any} populatePayload - An array of arrays containing the field name
    * and the ID field name to be populated.
    * @returns {Promise<any>} A promise resolving to the populated data object(s).
    * @throws {Error} Throws an error if the populate operation fails.
