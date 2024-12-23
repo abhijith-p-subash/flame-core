@@ -42,11 +42,15 @@ class FireStoreDatabaseService {
    */
   async getAll<T>(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
+      const { populate = [] } = task.options || {};
+      const limit = populate.length > 0 ? 50 : task.options?.limit ?? 1000;
       const colRef = collection(this.db, collectionName);
-      const limit = task.options?.limit ?? 1000;
       const q = queryValidator(task, colRef);
-      const totalCountRes = await this.getCount(collectionName, task);
-      const snapshot = await getDocs(q);
+      // Get total count and fetch data in parallel
+      const [totalCountRes, snapshot] = await Promise.all([
+        this.getCount(collectionName, task), // Fetch total count
+        getDocs(q), // Fetch documents
+      ]);
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as T),
@@ -66,7 +70,7 @@ class FireStoreDatabaseService {
         message: "Get all data successfully",
       };
     } catch (error) {
-      console.error(error);
+      console.error("Error in getAll:", error);
       throw error;
     }
   }
@@ -108,7 +112,7 @@ class FireStoreDatabaseService {
         message: "Get data by id successfully",
       };
     } catch (error) {
-      console.error(error);
+      console.error("Error in getById:", error);
       throw error;
     }
   }
@@ -128,6 +132,12 @@ class FireStoreDatabaseService {
       const colRef = collection(this.db, collectionName);
       const q = queryValidator(task, colRef);
       const snapshot = await getDocs(q);
+
+      // Check if any document was found
+      if (snapshot.empty) {
+        throw new Error("No data found");
+      }
+
       let data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as T),
@@ -141,11 +151,12 @@ class FireStoreDatabaseService {
       }
       return {
         data: data,
-        error: null,
         message: "Get one data successfully",
       };
     } catch (error) {
-      console.error(error);
+      // Log the error with more context for easier debugging
+      console.error("Error in getOne:", error);
+
       throw error;
     }
   }
@@ -198,11 +209,10 @@ class FireStoreDatabaseService {
       const docRef = await addDoc(colRef, task.body);
       return {
         data: { id: docRef.id, ...task.body } as T,
-        error: null,
         message: "Create successfully",
       };
     } catch (error) {
-      console.error(error);
+      console.error("Error in create:", error);
       throw error;
     }
   }
@@ -226,16 +236,8 @@ class FireStoreDatabaseService {
         data: { id: task.id, ...task.body } as T,
         message: "Document updated successfully",
       };
-
-      // const colRef = collection(this.db, collectionName, task.id as string);
-      // const docRef = await addDoc(colRef, task.body);
-      // return {
-      //   data: { id: docRef.id, ...task.body } as T,
-      //   error: null,
-      //   message: "Update successfully",
-      // };
     } catch (error) {
-      console.error(error);
+      console.error("Error in updateById:", error);
       throw error;
     }
   }
@@ -270,7 +272,7 @@ class FireStoreDatabaseService {
       }
       throw new Error("Document to update not found");
     } catch (error) {
-      console.error(error);
+      console.error("Error in updateOne:", error);
       throw error;
     }
   }
@@ -309,7 +311,7 @@ class FireStoreDatabaseService {
         message: "Bulk update successfully",
       };
     } catch (error) {
-      console.error(error);
+      console.error("Error in updateBulk:", error);
       throw error;
     }
   }
@@ -332,7 +334,7 @@ class FireStoreDatabaseService {
       const res = await deleteDoc(docRef);
       return { data: res as T, message: "Delete successfully" };
     } catch (error) {
-      console.error(error);
+      console.error("Error in deleteById:", error);
       throw error;
     }
   }
@@ -367,7 +369,7 @@ class FireStoreDatabaseService {
       }
       throw new Error("Document to delete not found");
     } catch (error) {
-      console.error(error);
+      console.error("Error in deleteOne:", error);
       throw error;
     }
   }
@@ -398,7 +400,7 @@ class FireStoreDatabaseService {
 
       return { data: res as T[], message: "Bulk delete successful" };
     } catch (error) {
-      console.error(error);
+      console.error("Error in deleteBulk:", error);
       throw error;
     }
   }
@@ -418,10 +420,6 @@ class FireStoreDatabaseService {
     try {
       const isArray = Array.isArray(data);
       const result = isArray ? [...data] : { ...data };
-
-      console.log("Data", data);
-      console.log("Populate Payload", populatePayload);
-      console.log("Data Type", isArray ? "array" : "object");
 
       for (const [field, idField] of populatePayload) {
         if (isArray) {
@@ -444,7 +442,7 @@ class FireStoreDatabaseService {
 
       return result;
     } catch (error) {
-      console.error(error);
+      console.error("Error in populateFn:", error);
       throw error;
     }
   }
