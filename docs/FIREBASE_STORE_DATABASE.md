@@ -58,10 +58,16 @@ const response = await storageService.getAll("users", {
       type: { $in: ["task", "reminder"] },
       archived: { $ne: true },
     },
+    populate: [
+      ["departments", "department_id"],
+      ["jobs", "job_id"],
+      ["locations", "location_id"],
+    ],
     sort: [
       ["createdAt", "desc"],
       ["priority", "asc"],
     ],
+
     startAfter: "cursorValue1",
     limit: 10,
   },

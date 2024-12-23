@@ -37,7 +37,7 @@ Defines options to pass to a task.
 
 - `search?` (*string*): String to search for in data.
 - `where?` (*WhereCondition*): Conditions to filter data with.
-- `populate?` (*[[string, string], [string, string]?, [string, string]?]*): Fields to populate in data (limited to a maximum of 3 entries).
+- `populate?` (*[[string, string], [string, string]?, [string, string]?]*): [['collection_name', 'reference_id']] Fields to populate in data (limited to a maximum of 3 entries).
 - `sort?` (*Array<[string, "asc" | "desc"]>*): Sort order for data.
 - `offset?` (*number*): Number of records to skip.
 - `limit?` (*number*): Number of records to return. Defaults to 10 if undefined and 1000 if set to -1.
