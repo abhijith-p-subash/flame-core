@@ -10,6 +10,23 @@ This documentation provides details about the `Task`, `TaskOptions`, `TaskRespon
 ### `WhereCondition`
 Defines conditions for filtering data.
 
+Custom Operator
+
+```typescript
+< less than                 : $lt
+<= less than or equal to    : $lte
+== equal to                 :
+> greater than              : $gt
+>= greater than or equal to : $gte
+!= not equal to             : $ne
+array-contains              : $arr-cont
+array-contains-any          : $arr-cont-any 
+in                          : $in
+not-in                      : $not-in
+
+```
+
+
 ```typescript
 type WhereCondition = {
   [key: string]:
