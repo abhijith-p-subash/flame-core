@@ -40,13 +40,16 @@ class FireStoreDatabaseService {
    * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse
    * containing the retrieved data, total count, and limit.
    */
-  async getAll<T>(collectionName: string, task: Task): Promise<TaskResponse> {
+  async getAll<T>(collectionName: string, task?: Task): Promise<TaskResponse> {
     try {
       const colRef = collection(this.db, collectionName);
-      if (task.options?.limit === undefined) {
-        task.options = { ...task.options, limit: 10 }; // Ensure task.options.limit is updated
-      } else if (task.options?.limit === -1) {
-        task.options = { ...task.options, limit: 1000 };
+      task = task || {}; // Ensure task is initialized if undefined
+      task.options = task.options || {}; // Ensure task.options is initialized if undefined
+
+      if (task.options.limit === undefined) {
+        task.options.limit = 10; // Default limit
+      } else if (task.options.limit === -1) {
+        task.options.limit = 1000; // Maximum limit
       }
 
       const q = queryValidator(task, colRef);
@@ -61,7 +64,7 @@ class FireStoreDatabaseService {
       })) as T[];
 
       if (
-        Array.isArray(task.options?.populate) &&
+        Array.isArray(task.options.populate) &&
         task.options.populate.length > 0
       ) {
         await this.populateFn(data, task.options.populate);
@@ -70,7 +73,7 @@ class FireStoreDatabaseService {
       return {
         data,
         count: totalCountRes.count,
-        limit:  task.options.limit,
+        limit: task.options.limit,
         message: "Get all data successfully",
       };
     } catch (error) {
@@ -90,12 +93,13 @@ class FireStoreDatabaseService {
    * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse
    * containing the retrieved data.
    */
-  async getById<T>(collectionName: string, task: Task): Promise<TaskResponse> {
+  async getById<T>(collectionName: string, task?: Task): Promise<TaskResponse> {
     try {
+      task = task || {}; // Ensure task is initialized if undefined
       if (!task.id) {
         throw new Error("Id is required");
       }
-
+  
       const snapshot = await getDoc(
         doc(this.db, collectionName, task.id as string)
       );
@@ -103,14 +107,14 @@ class FireStoreDatabaseService {
         throw new Error("Data not found");
       }
       let data = { id: snapshot.id, ...snapshot.data() } as T;
-
+  
       if (
         Array.isArray(task.options?.populate) &&
         task.options.populate.length > 0
       ) {
         data = await this.populateFn(data, task.options.populate);
       }
-
+  
       return {
         data,
         message: "Get data by id successfully",
@@ -131,28 +135,32 @@ class FireStoreDatabaseService {
    * @returns {Promise<TaskResponse>} A promise resolving to a TaskResponse containing the first matched document.
    */
 
-  async getOne<T>(collectionName: string, task: Task): Promise<TaskResponse> {
+  async getOne<T>(collectionName: string, task?: Task): Promise<TaskResponse> {
     try {
       const colRef = collection(this.db, collectionName);
+      task = task || {}; // Ensure task is initialized if undefined
+      task.options = task.options || {}; // Ensure task.options is initialized if undefined
+  
       const q = queryValidator(task, colRef);
       const snapshot = await getDocs(q);
-
+  
       // Check if any document was found
       if (snapshot.empty) {
         throw new Error("No data found");
       }
-
+  
       let data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as T),
       }))[0] as T;
-      console.log(data);
+  
       if (
-        Array.isArray(task.options?.populate) &&
+        Array.isArray(task.options.populate) &&
         task.options.populate.length > 0
       ) {
         data = await this.populateFn(data, task.options.populate);
       }
+  
       return {
         data: data,
         message: "Get one data successfully",
@@ -160,7 +168,6 @@ class FireStoreDatabaseService {
     } catch (error) {
       // Log the error with more context for easier debugging
       console.error("Error in getOne:", error);
-
       throw error;
     }
   }
@@ -179,7 +186,7 @@ class FireStoreDatabaseService {
    * containing the count of matched documents.
    */
 
-  async getCount(collectionName: string, task: Task): Promise<TaskResponse> {
+  async getCount(collectionName: string, task?: Task): Promise<TaskResponse> {
     try {
       const colRef = collection(this.db, collectionName);
       const q = queryValidator(
