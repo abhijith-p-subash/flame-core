@@ -42,9 +42,13 @@ class FireStoreDatabaseService {
    */
   async getAll<T>(collectionName: string, task: Task): Promise<TaskResponse> {
     try {
-      const { populate = [] } = task.options || {};
-      const limit = populate.length > 0 ? 50 : task.options?.limit ?? 1000;
       const colRef = collection(this.db, collectionName);
+      if (task.options?.limit === undefined) {
+        task.options = { ...task.options, limit: 10 }; // Ensure task.options.limit is updated
+      } else if (task.options?.limit === -1) {
+        task.options = { ...task.options, limit: 1000 };
+      }
+
       const q = queryValidator(task, colRef);
       // Get total count and fetch data in parallel
       const [totalCountRes, snapshot] = await Promise.all([
@@ -66,7 +70,7 @@ class FireStoreDatabaseService {
       return {
         data,
         count: totalCountRes.count,
-        limit: limit,
+        limit:  task.options.limit,
         message: "Get all data successfully",
       };
     } catch (error) {

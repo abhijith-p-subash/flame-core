@@ -47,12 +47,12 @@ export interface TaskOptions {
   where?: WhereCondition;
 
   /**
-   * Fields to populate in data.
+   * Populate related data (limited to a maximum of 3 entries).
    *
-   * @type {(string | any[])}
+   * @type {[string, string] | [string, string, string] | [string, string, string, string]}
    * @memberof TaskOptions
    */
-  populate?: string | any[];
+  populate?: [[string, string], [string, string]?, [string, string]?];
 
   /**
    * Sort order for data.
@@ -77,7 +77,6 @@ export interface TaskOptions {
    * @memberof TaskOptions
    */
   limit?: number;
-
 
   /**
    * A cursor for use in pagination.
@@ -130,14 +129,6 @@ export interface TaskResponse {
   message?: string;
 
   /**
-   * Number of records skipped.
-   *
-   * @type {number}
-   * @memberof TaskResponse
-   */
-  offset?: number;
-
-  /**
    * Number of records returned.
    *
    * @type {number}
@@ -176,14 +167,6 @@ export interface Task {
    * @memberof Task
    */
   uid?: string;
-
-  /**
-   * Owner of the task.
-   *
-   * @type {*}
-   * @memberof Task
-   */
-  owner?: any;
 
   /**
    * Action to perform for the task.
@@ -262,4 +245,3 @@ export class TaskResponseError extends Error {
     this.name = this.constructor.name;
   }
 }
-
