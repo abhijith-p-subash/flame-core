@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   getFirestore,
   Firestore,
@@ -50,7 +51,6 @@ class FireStoreDatabaseService {
         id: doc.id,
         ...(doc.data() as T),
       })) as T[];
-
       return {
         data,
         count: totalCountRes.count,
@@ -201,7 +201,6 @@ class FireStoreDatabaseService {
 
       const docRef = doc(this.db, collectionName, task.id as string);
       await updateDoc(docRef, task.body);
-
       return {
         data: { id: task.id, ...task.body } as T,
         message: "Document updated successfully",
@@ -343,7 +342,7 @@ class FireStoreDatabaseService {
         return {
           data: res.data as T,
           message: "Document deleted successfully",
-        }
+        };
       }
       throw new Error("Document to delete not found");
     } catch (error) {
@@ -377,6 +376,52 @@ class FireStoreDatabaseService {
       );
 
       return { data: res as T[], message: "Bulk delete successful" };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  /**
+   * Populates the specified field(s) of the given data object(s) with the 
+   * corresponding document from the specified collection. If the data is an array, 
+   * the populate operation is performed in parallel using Promise.all.
+   * 
+   * @param {any} data - The data object(s) to be populated.
+   * @param {any} populatePayload - An array of arrays containing the field name 
+   * and the ID field name to be populated.
+   * @returns {Promise<any>} A promise resolving to the populated data object(s).
+   * @throws {Error} Throws an error if the populate operation fails.
+   */
+  async populateFn(data: any, populatePayload: any) {
+    try {
+      const isArray = Array.isArray(data);
+      const result = isArray ? [...data] : { ...data };
+
+      console.log("Data", data);
+      console.log("Populate Payload", populatePayload);
+      console.log("Data Type", isArray ? "array" : "object");
+
+      for (const [field, idField] of populatePayload) {
+        if (isArray) {
+          // Use Promise.all for parallel fetching
+          await Promise.all(
+            result.map(async (item: any) => {
+              const populateData = await this.getById(field, {
+                id: item[idField] as string,
+              });
+              item[field] = populateData.data;
+            })
+          );
+        } else {
+          const populateData = await this.getById(field, {
+            id: result[idField] as string,
+          });
+          result[field] = populateData.data;
+        }
+      }
+
+      return result;
     } catch (error) {
       console.error(error);
       throw error;
