@@ -1,10 +1,16 @@
 {
   "name": "flame-core",
-  "version": "1.0.0",
-  "main": "index.ts",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "homepage": "https://github.com/abhijith-p-subash/flame-core",
+  "repository": {
+    "url": "https://github.com/abhijith-p-subash/flame-core"
+  },
   "scripts": {
     "lint": "eslint src/**/*.ts",
-    "build": "tsc",
+    "build": "tsup",
     "test": "jest --passWithNoTests",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
@@ -13,7 +19,15 @@
   },
   "author": "Abhijith P Subash",
   "license": "MIT",
-  "description": "",
+  "description": "flame-core is a collection of Firebase services designed to simplify common tasks and make Firebase integration more efficient and enjoyable.",
+  "keywords": [
+    "firebase",
+    "flame-core",
+    "firebase-auth",
+    "firebase-storage",
+    "firebase-database",
+    "firebase curd operations"
+  ],
   "dependencies": {
     "firebase": "^11.0.2"
   },
@@ -29,6 +43,7 @@
     "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0"
   }

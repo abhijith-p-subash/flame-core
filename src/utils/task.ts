@@ -5,7 +5,7 @@
  * @export
  * @interface WhereCondition
  */
-type WhereCondition = {
+export type WhereCondition = {
   [key: string]:
     | string
     | number
