@@ -1,20 +1,22 @@
-# flame-core Documentation
+![banner](flame-core-banner.png)
+
+# flame-core 
 
 `flame-core` is a comprehensive npm package designed to simplify Firebase operations. It provides developers with modular services for managing Firebase authentication, database, and storage with minimal boilerplate code. By using `flame-core`, you can streamline common Firebase tasks, saving time and effort in your development process.
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Installation](#installation)
-3. [Features](#features)
-4. [Modules](#modules)
-   - [FirebaseConfig](#firebaseconfig)
-   - [FireAuthService](#fireauthservice)
-   - [FireStoreDatabaseService](#firestoredatabaseservice)
-   - [FireStorageService](#firestorageservice)
-5. [Utils](#utils)
-   - [Task](#task)
-   - [Validation](#validation)
+1. [Overview ⇗](#overview)
+2. [Installation ⇗](#installation)
+3. [Features ⇗](#features)
+4. [Modules ⇗](#modules)
+   - [FirebaseConfig ⇗](#firebaseconfig)
+   - [FireAuthService ⇗](#fireauthservice)
+   - [FireStoreDatabaseService ⇗](#firestoredatabaseservice)
+   - [FireStorageService ⇗](#firestorageservice)
+5. [Util ⇗s](#utils)
+   - [Task ⇗](#task)
+   - [Validation ⇗](#validation)
 
 ---
 
@@ -114,7 +116,7 @@ const authService = fireAuthService();
 })();
 ```
 
-[Read detailed documentation](docs/FIREBASE_AUTHENTICATION.md)
+[Read detailed documentation ⇗](docs/FIREBASE_AUTHENTICATION.md)
 
 ---
 
@@ -166,7 +168,7 @@ interface Users {
 })();
 ```
 
-[Read detailed documentation](docs/FIREBASE_STORE_DATABASE.md)
+[Read detailed documentation ⇗](docs/FIREBASE_STORE_DATABASE.md)
 
 ---
 
@@ -195,7 +197,7 @@ const storageService = fireStorageService();
 })();
 ```
 
-[Read detailed documentation](docs/FIREBASE_STORAGE.md)
+[Read detailed documentation ⇗](docs/FIREBASE_STORAGE.md)
 
 ---
 
@@ -212,7 +214,7 @@ The `Task` module provides a structured interface for defining and handling task
 - Manage errors using the `TaskResponseError` class.
 - Includes `queryValidator` to dynamically build Firestore queries.
 
-[Read detailed documentation](docs/TASK.md)
+[Read detailed documentation ⇗](docs/TASK.md)
 
 ---
 
@@ -223,7 +225,7 @@ The `Validation` module includes functions to validate the structure and content
 - `validateQuery`: Validates the query object to ensure it is correctly formatted.
 - Integrated into Firestore query building for error-free dynamic queries.
 
-[Read detailed documentation](docs/VALIDATION.md)
+[Read detailed documentation ⇗](docs/VALIDATION.md)
 
 ## Contribute
 
@@ -234,7 +236,7 @@ We welcome contributions to make flame-core better! If you have ideas, suggestio
 ## Support the Developer
 
 If you find this project helpful, consider buying me a coffee! Your support means the world. ☕
-[Buy Me A Coffee](https://www.buymeacoffee.com/abhijithpsubash)
+[Buy Me A Coffee ⇗](https://www.buymeacoffee.com/abhijithpsubash)
 
 #### Contact me
 
