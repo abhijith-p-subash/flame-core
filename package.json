@@ -6,7 +6,8 @@
   "types": "./dist/index.d.ts",
   "homepage": "https://github.com/abhijith-p-subash/flame-core",
   "repository": {
-    "url": "https://github.com/abhijith-p-subash/flame-core"
+    "type": "git",
+    "url": "git+https://github.com/abhijith-p-subash/flame-core"
   },
   "scripts": {
     "lint": "eslint src/**/*.ts",
@@ -17,15 +18,14 @@
     "clean": "rimraf dist",
     "dev": "ts-node src/index.ts"
   },
-  "author": "Abhijith P Subash",
+  "author": "Abhijith P Subash <abhijith.p.subash@gmail.com>",
   "license": "MIT",
   "description": "flame-core is a collection of Firebase services designed to simplify common tasks and make Firebase integration more efficient and enjoyable.",
   "keywords": [
     "firebase",
-    "flame-core",
-    "firebase-auth",
-    "firebase-storage",
-    "firebase-database",
+    "authentication",
+    "database",
+    "storage",
     "firebase curd operations"
   ],
   "dependencies": {
