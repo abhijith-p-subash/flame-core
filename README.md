@@ -14,7 +14,7 @@
    - [FireAuthService ⇗](#fireauthservice)
    - [FireStoreDatabaseService ⇗](#firestoredatabaseservice)
    - [FireStorageService ⇗](#firestorageservice)
-5. [Util ⇗s](#utils)
+5. [Utils ⇗](#utils)
    - [Task ⇗](#task)
    - [Validation ⇗](#validation)
 
